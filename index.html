@@ -1,0 +1,1544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Desa Bangkalaloe - Infografis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+    <!-- Google Fonts: Poppins for body, Montserrat for headings -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- D3.js library for charts -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        /* Apply Poppins font globally */
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #333; /* Darker default text for better contrast */
+            line-height: 1.6; /* Improved readability */
+            overflow-x: hidden; /* Prevent horizontal scroll on animations */
+            background-color: #F0F2F5; /* Consistent background with Canvas */
+        }
+
+        /* Apply Montserrat font for all headings */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Custom CSS for responsive navbar on small screens */
+        @media (max-width: 767px) {
+            #nav-menu {
+                display: none; /* Hidden by default on mobile */
+                position: absolute;
+                top: 100%; /* Position below the header */
+                left: 0;
+                right: 0;
+                background-color: #1a5276; /* Dark blue background for mobile menu */
+                padding: 1rem;
+                z-index: 1000;
+                border-radius: 0 0 0.75rem 0.75rem; /* Rounded bottom corners */
+                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* Stronger shadow from Canvas */
+                animation: slideDown 0.3s ease-out forwards; /* Slide down animation */
+            }
+            #nav-menu.active {
+                display: block; /* Show when active */
+            }
+            #nav-menu ul {
+                flex-direction: column; /* Stack items vertically */
+                gap: 0.75rem; /* Spacing between menu items */
+            }
+            #nav-menu ul li {
+                width: 100%; /* Full width for each item */
+            }
+            #nav-menu ul li a {
+                display: block;
+                padding: 0.75rem 1rem;
+                text-align: center;
+                border-radius: 0.5rem; /* Rounded links */
+                background-color: rgba(255, 255, 255, 0.05); /* Subtle background for mobile links */
+                transition: background-color 0.2s ease;
+            }
+            #nav-menu ul li a:hover {
+                background-color: rgba(255, 255, 255, 0.15);
+            }
+        }
+
+        /* Keyframe animation for mobile menu */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Active navigation link styling with underline effect (from Canvas) */
+        .nav-link {
+            transition: color 0.3s ease, background-color 0.3s ease;
+            position: relative;
+            padding-bottom: 8px; /* Space for the underline */
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0%;
+            height: 3px;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #3498db; /* Bright blue underline */
+            border-radius: 2px;
+            transition: width 0.3s ease-in-out;
+        }
+        .nav-link.active::after,
+        .nav-link:hover::after {
+            width: 70%; /* Wider underline on active/hover */
+        }
+        .nav-link.active {
+            color: #3498db; /* Bright blue text when active */
+            font-weight: 700;
+        }
+
+        /* Hover zoom effect for images */
+        .hover-zoom:hover {
+            transform: scale(1.05);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        /* Custom scroll effect for header (from Canvas) */
+        .header-scrolled {
+            background-image: linear-gradient(to right, rgba(26, 82, 118, 0.98), rgba(40, 116, 166, 0.98));
+            backdrop-filter: blur(10px); /* Stronger blur effect */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); /* Stronger shadow when scrolled */
+            padding-top: 0.75rem; /* Slightly reduced padding */
+            padding-bottom: 0.75rem;
+        }
+
+        /* Custom scrollbar for modals (from Canvas) */
+        .modal-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .modal-content::-webkit-scrollbar-track {
+            background: #e0e0e0; /* Lighter track */
+            border-radius: 10px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Tooltip for D3 charts */
+        .tooltip {
+            position: absolute;
+            text-align: center;
+            padding: 8px;
+            font: 12px sans-serif;
+            background: #333;
+            color: #fff;
+            border: 0px;
+            border-radius: 8px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        /* Animation for fade-in effect */
+        .animate-fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        .animate-fade-in.delay-100 {
+            animation-delay: 0.1s;
+        }
+
+        .animate-fade-in.delay-200 {
+            animation-delay: 0.2s;
+        }
+
+        .animate-fade-in.delay-300 {
+            animation-delay: 0.3s;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Card hover effect */
+        .card-hover-effect {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-hover-effect:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* D3 legend styling */
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .legend-color-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            margin-right: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.5); /* Subtle border for color boxes */
+        }
+        .legend-text {
+            font-size: 14px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        /* Custom header underline for sections */
+        .section-title-underline {
+            position: relative;
+            padding-bottom: 0.5rem; /* Space for the underline */
+        }
+        .section-title-underline::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 4rem; /* Length of the underline */
+            height: 0.25rem; /* Thickness of the underline */
+            background-color: #2874A6; /* Blue color */
+            border-radius: 9999px; /* Fully rounded ends */
+        }
+
+        /* Carousel navigation overlay - Adjusted to match image */
+        .carousel-nav-overlay {
+            position: absolute;
+            top: 50%; /* Center vertically */
+            transform: translateY(-50%); /* Adjust for vertical centering */
+            width: 40px; /* Width of the button */
+            height: 40px; /* Height of the button */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.5rem; /* Size of the arrow icon */
+            color: #2874A6; /* Blue arrow color */
+            background-color: white; /* White background */
+            border-radius: 0.5rem; /* Rounded corners for rectangular shape */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            user-select: none; /* Prevent text selection */
+            z-index: 10; /* Ensure it's above the image */
+        }
+
+        .carousel-nav-overlay:hover {
+            background-color: #f0f0f0; /* Slightly grey on hover */
+            transform: translateY(-50%) scale(1.05); /* Slightly larger zoom on hover */
+        }
+
+        .carousel-nav-overlay.left {
+            left: 10px; /* Distance from left edge */
+        }
+
+        .carousel-nav-overlay.right {
+            right: 10px; /* Distance from right edge */
+        }
+
+        /* Flexible grid for Sarana dan Prasarana sections */
+        .flexible-grid {
+            display: grid;
+            /* Adjust min-width for cards as needed. This will make them at least 250px wide. */
+            /* The 'auto-fit' keyword will create as many columns as can fit without overflow. */
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem; /* Corresponds to Tailwind's gap-4 */
+        }
+
+        /* Increased size for detail modal and carousel */
+        #detailModal .modal-content {
+            max-width: 800px; /* Increased from 768px to make it wider */
+            width: 95%; /* Ensure it takes up most of the screen on smaller devices */
+        }
+
+        #carouselContainer {
+            height: 400px; /* Increased height for a more rectangular image */
+            width: 100%; /* Ensure it takes full width of its container */
+        }
+        #carouselContainer img {
+            object-fit: contain; /* Ensure the entire image is visible, fitting within the container */
+        }
+    </style>
+</head>
+<body class="bg-[#F8F9FA] text-gray-800">
+    <!-- Header Section -->
+    <header class="fixed top-0 left-0 right-0 bg-gradient-to-r from-[#1A5276] to-[#2874A6] p-4 flex items-center z-50 shadow-lg transition-all duration-300 ease-in-out" id="main-header">
+        <div class="container mx-auto flex items-center justify-between">
+            <div class="flex items-center">
+                <img
+                    alt="Logo of Jeneponto"
+                    class="h-16 w-16 mr-4 rounded-full shadow-lg transform hover:rotate-6 transition-transform duration-300"
+                    height="80"
+                    src="https://placehold.co/80x80/1A5276/FFFFFF?text=Logo"
+                    width="80"
+                />
+                <div>
+                    <h1 class="text-white text-3xl font-extrabold tracking-wider">Desa Bangkalaloe</h1>
+                    <p class="text-white text-sm opacity-90">Kabupaten Jeneponto</p>
+                </div>
+            </div>
+            <!-- Hamburger Icon for Mobile -->
+            <button id="hamburger" class="md:hidden text-white text-3xl focus:outline-none p-2 rounded-md hover:bg-white hover:bg-opacity-20 transition-colors duration-200">
+                <i class="fas fa-bars"></i>
+            </button>
+            <!-- Navigation Menu -->
+            <nav id="nav-menu" class="ml-auto hidden md:block">
+                <ul class="flex space-x-6 text-white">
+                    <li class="group relative">
+                        <a
+                            class="relative z-10 font-semibold nav-link px-4 py-2 rounded-lg
+                            group-hover:text-white transition-all duration-300"
+                            href="index.html"
+                        >
+                            Home
+                        </a>
+                    </li>
+                    <li class="group relative">
+                        <a
+                            class="relative z-10 font-semibold nav-link px-4 py-2 rounded-lg
+                            group-hover:text-white transition-all duration-300"
+                            href="profildesa.html"
+                        >
+                            Profil Desa
+                        </a>
+                    </li>
+                    <li class="group relative">
+                        <a
+                            class="relative z-10 font-semibold nav-link px-4 py-2 rounded-lg active
+                            group-hover:text-white transition-all duration-300"
+                            href="infografis.html"
+                        >
+                            Infografis
+                        </a>
+                    </li>
+                    <li class="group relative">
+                        <a
+                            class="relative z-10 font-semibold nav-link px-4 py-2 rounded-lg
+                            group-hover:text-white transition-all duration-300"
+                            href="umkm.html"
+                        >
+                            UMKM
+                        </a>
+                    </li>
+                    <li class="group relative">
+                        <a
+                            class="relative z-10 font-semibold nav-link px-4 py-2 rounded-lg
+                            group-hover:text-white transition-all duration-300"
+                            href="about.html"
+                        >
+                            About
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="relative pt-24 md:pt-32"> <!-- Adjusted padding top for fixed header -->
+        <div class="container mx-auto px-4 py-8 md:px-8 md:py-12 bg-white rounded-lg shadow-xl my-8">
+            <div class="flex items-center mb-4">
+                <div class="w-1.5 bg-[#2874A6] h-14 mr-4 rounded-full"></div>
+                <div>
+                    <h1 class="text-4xl font-bold text-gray-800 section-title-underline">Infografis</h1>
+                    <h2 class="text-2xl text-gray-500 mt-2">Data Umum Desa Bangkalaloe</h2>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <div class="bg-gray-100 p-5 rounded-xl shadow-lg border border-gray-200 flex items-center card-hover-effect animate-fade-in">
+                    <i class="fas fa-users text-4xl text-[#2874A6] mr-4"></i>
+                    <div>
+                        <p class="text-gray-600">TOTAL PENDUDUK</p>
+                        <p class="text-2xl font-bold text-[#2874A6]">3.107 Jiwa</p>
+                    </div>
+                </div>
+                <div class="bg-gray-100 p-5 rounded-xl shadow-lg border border-gray-200 flex items-center card-hover-effect animate-fade-in delay-100">
+                    <i class="fas fa-house-user text-4xl text-[#2874A6] mr-4"></i>
+                    <div>
+                        <p class="text-gray-600">KEPALA KELUARGA</p>
+                        <p class="text-2xl font-bold text-[#2874A6]">939 KK</p>
+                    </div>
+                </div>
+                <div class="bg-gray-100 p-5 rounded-xl shadow-lg border border-gray-200 flex items-center card-hover-effect animate-fade-in delay-200">
+                    <i class="fas fa-map-marked-alt text-4xl text-[#2874A6] mr-4"></i>
+                    <div>
+                        <p class="text-gray-600">JUMLAH DUSUN</p>
+                        <p class="text-2xl font-bold text-[#2874A6]">3 Dusun</p>
+                    </div>
+                </div>
+                <div class="bg-gray-100 p-5 rounded-xl shadow-lg border border-gray-200 flex items-center card-hover-effect animate-fade-in delay-300">
+                    <i class="fas fa-list-ol text-4xl text-[#2874A6] mr-4"></i>
+                    <div>
+                        <p class="text-gray-600">JUMLAH RK</p>
+                        <p class="text-2xl font-bold text-[#2874A6]">16 RK</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container mx-auto px-4 py-8 md:px-8 md:py-12 bg-white rounded-lg shadow-xl my-8">
+            <div class="flex items-center mb-4">
+                <div class="w-1.5 bg-[#2874A6] h-14 mr-4 rounded-full"></div>
+                <div>
+                    <h1 class="text-4xl font-bold text-gray-800 section-title-underline">Statistik Demografi Penduduk</h1>
+                    <p class="text-lg text-gray-600 mt-2">Data pekerjaan dan tingkat pendidikan umum masyarakat Desa Bangkalaloe.</p>
+                </div>
+            </div>
+
+            <!-- Combined section for Pekerjaan and Pendidikan charts -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 bg-gradient-to-br from-blue-50 to-indigo-100 p-6 rounded-xl shadow-lg">
+                <div class="chart-section animate-fade-in"> <!-- Added class for animation -->
+                    <div class="flex items-center mb-4">
+                        <div class="w-1.5 bg-[#2874A6] h-10 mr-4 rounded-full"></div> <!-- Smaller line for sub-section -->
+                        <div>
+                            <h2 class="text-3xl font-bold text-gray-700">Berdasarkan Pekerjaan</h2>
+                        </div>
+                    </div>
+                    <div id="pekerjaan-chart-container" class="flex justify-center items-center w-full min-h-[400px] bg-white p-4 rounded-lg shadow-md border border-gray-100 relative z-10">
+                        <!-- D3.js chart will be rendered here -->
+                    </div>
+                </div>
+
+                <div class="chart-section animate-fade-in delay-100"> <!-- Added class for animation with delay -->
+                    <div class="flex items-center mb-4">
+                        <div class="w-1.5 bg-[#2874A6] h-10 mr-4 rounded-full"></div> <!-- Smaller line for sub-section -->
+                        <div>
+                            <h2 class="text-3xl font-bold text-gray-700">Berdasarkan Lulusan Pendidikan Umum</h2>
+                        </div>
+                    </div>
+                    <div id="pendidikan-chart-container" class="flex justify-center items-center w-full min-h-[400px] bg-white p-4 rounded-lg shadow-md border border-gray-100 relative z-10">
+                        <!-- D3.js chart will be rendered here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                <div class="bg-gray-100 shadow-lg rounded-xl p-5 border border-gray-200 card-hover-effect animate-fade-in delay-200">
+                    <div class="flex items-center mb-4">
+                        <div class="w-1.5 bg-[#2874A6] h-10 mr-4 rounded-full"></div>
+                        <h1 class="font-bold text-xl text-gray-800">Lulusan Pendidikan Khusus</h1>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-center bg-white p-3 rounded-lg shadow-sm">
+                            <i class="fas fa-mosque text-3xl text-[#2874A6] mr-4"></i>
+                            <div>
+                                <p class="text-gray-600">PONDOK PESANTREN</p>
+                                <p class="text-2xl font-bold text-[#2874A6]">2 ORANG</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center bg-white p-3 rounded-lg shadow-sm">
+                            <i class="fas fa-cross text-3xl text-[#2874A6] mr-4"></i>
+                            <div>
+                                <p class="text-gray-600">PENDIDIKAN KEAGAMAAN</p>
+                                <p class="text-2xl font-bold text-[#2874A6]">27 ORANG</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-100 shadow-lg rounded-xl p-5 border border-gray-200 flex items-center card-hover-effect animate-fade-in delay-300">
+                    <div class="flex items-center mb-4">
+                        <div class="w-1.5 bg-[#2874A6] h-10 mr-4 rounded-full"></div>
+                        <h1 class="font-bold text-xl text-gray-800">Tidak Lulus Dan Tidak Sekolah</h1>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-center bg-white p-3 rounded-lg shadow-sm">
+                            <i class="fas fa-times-circle text-3xl text-[#2874A6] mr-4"></i>
+                            <div>
+                                <p class="text-gray-600">TIDAK LULUS</p>
+                                <p class="text-2xl font-bold text-[#2874A6]">9 ORANG</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container mx-auto px-4 py-8 md:px-8 md:py-12 bg-white rounded-lg shadow-xl my-8">
+            <div class="flex items-center mb-4">
+                <div class="w-1.5 bg-[#2874A6] h-14 mr-4 rounded-full"></div>
+                <div>
+                    <h1 class="text-4xl font-bold text-gray-800 section-title-underline">Sarana dan Prasarana</h1>
+                </div>
+            </div>
+
+            <!-- Sarana dan Prasarana (General) -->
+            <div class="mb-8 flexible-grid">
+                <div class="bg-gray-100 p-5 rounded-xl shadow-lg border border-gray-200 flex items-center card-hover-effect">
+                    <i class="fas fa-building text-4xl text-[#2874A6] mr-4"></i>
+                    <div class="flex-grow-0">
+                        <p class="text-gray-600">KANTOR DESA</p>
+                        <p class="text-2xl font-bold text-[#2874A6]">1 UNIT</p>
+                    </div>
+                    <button class="ml-auto text-gray-500 hover:text-[#2874A6] transition-colors duration-200" onclick="openDetailModal('Kantor Desa', '1 UNIT', [{url: 'images/home.jpg', name: 'Gedung Kantor Desa', address: 'Jl. Desa No.1'}])">
+                        <i class="fas fa-info-circle text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <h2 class="text-2xl font-bold text-gray-800 mt-8 mb-4">Sarana Kesehatan</h2>
+            <div class="flexible-grid mb-8">
+                <div class="bg-gray-100 p-5 rounded-xl shadow-lg border border-gray-200 flex items-center card-hover-effect">
+                    <i class="fas fa-hospital text-4xl text-[#2874A6] mr-4"></i>
+                    <div class="flex-grow-0">
+                        <p class="text-gray-600">POSKESDES</p>
+                        <p class="text-2xl font-bold text-[#2874A6]">1 BUAH</p>
+                    </div>
+                    <button class="ml-auto text-gray-500 hover:text-[#2874A6] transition-colors duration-200" onclick="openDetailModal('POSKESDES', '1 BUAH', [{url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=POSKESDES+Bangkalaloe', name: 'Puskesmas Pembantu Desa', address: 'Jl. Kesehatan No.1'}])">
+                        <i class="fas fa-info-circle text-2xl"></i>
+                    </button>
+                </div>
+                <div class="bg-gray-100 p-5 rounded-xl shadow-lg border border-gray-200 flex items-center card-hover-effect">
+                    <i class="fas fa-clinic-medical text-4xl text-[#2874A6] mr-4"></i>
+                    <div class="flex-grow-0">
+                        <p class="text-gray-600">POSYANDU</p>
+                        <p class="text-2xl font-bold text-[#2874A6]">3 BUAH</p>
+                    </div>
+                    <button class="ml-auto text-gray-500 hover:text-[#2874A6] transition-colors duration-200" onclick="openDetailModal('POSYANDU', '3 BUAH', [
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=POSYANDU+Dusun+A', name: 'Posyandu Melati', address: 'Dusun A'},
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=POSYANDU+Dusun+B', name: 'Posyandu Anggrek', address: 'Dusun B'},
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=POSYANDU+Dusun+C', name: 'Posyandu Kenanga', address: 'Dusun C'}
+                    ])">
+                        <i class="fas fa-info-circle text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <h2 class="text-2xl font-bold text-gray-800 mt-8 mb-4">Prasarana Pendidikan</h2>
+            <div class="flexible-grid mb-8">
+                <div class="bg-gray-100 p-5 rounded-xl shadow-lg border border-gray-200 flex items-center card-hover-effect">
+                    <i class="fas fa-child text-4xl text-[#2874A6] mr-4"></i>
+                    <div class="flex-grow-0">
+                        <p class="text-gray-600">PAUD</p>
+                        <p class="text-2xl font-bold text-[#2874A6]">1</p>
+                    </div>
+                    <button class="ml-auto text-gray-500 hover:text-[#2874A6] transition-colors duration-200" onclick="openDetailModal('PAUD', '1 UNIT', [{url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=PAUD+Ceria', name: 'PAUD Ceria Bangkalaloe', address: 'Jl. Pendidikan No.5'}])">
+                        <i class="fas fa-info-circle text-2xl"></i>
+                    </button>
+                </div>
+                <div class="bg-gray-100 p-5 rounded-xl shadow-lg border border-gray-200 flex items-center card-hover-effect">
+                    <i class="fas fa-school text-4xl text-[#2874A6] mr-4"></i>
+                    <div class="flex-grow-0">
+                        <p class="text-gray-600">TK</p>
+                        <p class="text-2xl font-bold text-[#2874A6]">2 BUAH</p>
+                    </div>
+                    <button class="ml-auto text-gray-500 hover:text-[#2874A6] transition-colors duration-200" onclick="openDetailModal('TK', '2 BUAH', [
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=TK+Bina+Anak+Bangsa', name: 'TK Bina Anak Bangsa', address: 'Dusun A'},
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=TK+Harapan+Bangsa', name: 'TK Harapan Bangsa', address: 'Dusun B'}
+                    ])">
+                        <i class="fas fa-info-circle text-2xl"></i>
+                    </button>
+                </div>
+                <div class="bg-gray-100 p-5 rounded-xl shadow-lg border border-gray-200 flex items-center card-hover-effect">
+                    <i class="fas fa-book-reader text-4xl text-[#2874A6] mr-4"></i>
+                    <div class="flex-grow-0">
+                        <p class="text-gray-600">SD</p>
+                        <p class="text-2xl font-bold text-[#2874A6]">2 BUAH</p>
+                    </div>
+                    <button class="ml-auto text-gray-500 hover:text-[#2874A6] transition-colors duration-200" onclick="openDetailModal('SD', '2 BUAH', [
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=SDN+1+Bangkalaloe', name: 'SD Negeri 1 Bangkalaloe', address: 'Dusun C'},
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=SDN+2+Bangkalaloe', name: 'SD Negeri 2 Bangkalaloe', address: 'Dusun D'}
+                    ])">
+                        <i class="fas fa-info-circle text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <h2 class="text-2xl font-bold text-gray-800 mt-8 mb-4">Prasarana Ibadah</h2>
+            <div class="flexible-grid mb-8">
+                <div class="bg-gray-100 p-5 rounded-xl shadow-lg border border-gray-200 flex items-center card-hover-effect">
+                    <i class="fas fa-mosque text-4xl text-[#2874A6] mr-4"></i>
+                    <div class="flex-grow-0">
+                        <p class="text-gray-600">MASJID</p>
+                        <p class="text-2xl font-bold text-[#2874A6]">6 BUAH</p>
+                    </div>
+                    <button class="ml-auto text-gray-500 hover:text-[#2874A6] transition-colors duration-200" onclick="openDetailModal('Masjid', '6 BUAH', [
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=Masjid+Al-Ikhlas', name: 'Masjid Al-Ikhlas', address: 'Dusun A'},
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=Masjid+Nurul+Iman', name: 'Masjid Nurul Iman', address: 'Dusun B'},
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=Masjid+Baitul+Rahim', name: 'Masjid Baitul Rahim', address: 'Dusun C'},
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=Masjid+Darussalam', name: 'Masjid Darussalam', address: 'Dusun D'},
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=Masjid+Al-Amin', name: 'Masjid Al-Amin', address: 'Dusun E'},
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=Masjid+Raudhatul+Jannah', name: 'Masjid Raudhatul Jannah', address: 'Dusun F'}
+                    ])">
+                        <i class="fas fa-info-circle text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <h2 class="text-2xl font-bold text-gray-800 mt-8 mb-4">Prasarana Umum</h2>
+            <div class="flexible-grid mb-8">
+                <div class="bg-gray-100 p-5 rounded-xl shadow-lg border border-gray-200 flex items-center card-hover-effect">
+                    <i class="fas fa-futbol text-4xl text-[#2874A6] mr-4"></i>
+                    <div class="flex-grow-0">
+                        <p class="text-gray-600">SEPAK BOLA</p>
+                        <p class="text-2xl font-bold text-[#2874A6]">1 BUAH</p>
+                    </div>
+                    <button class="ml-auto text-gray-500 hover:text-[#2874A6] transition-colors duration-200" onclick="openDetailModal('Lapangan Sepak Bola', '1 BUAH', [
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=Lapangan+Sepak+Bola+Utama', name: 'Lapangan Sepak Bola Utama', address: 'Pusat Desa'}
+                    ])">
+                        <i class="fas fa-info-circle text-2xl"></i>
+                    </button>
+                </div>
+                <div class="bg-gray-100 p-5 rounded-xl shadow-lg border border-gray-200 flex items-center card-hover-effect">
+                    <i class="fas fa-feather-alt text-4xl text-[#2874A6] mr-4"></i>
+                    <div class="flex-grow-0">
+                        <p class="text-gray-600">BULUTANGKIS</p>
+                        <p class="text-2xl font-bold text-[#2874A6]">1 BUAH</p>
+                    </div>
+                    <button class="ml-auto text-gray-500 hover:text-[#2874A6] transition-colors duration-200" onclick="openDetailModal('Lapangan Bulutangkis', '1 BUAH', [
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=Lapangan+Bulutangkis+Desa', name: 'Lapangan Bulutangkis Desa', address: 'Pusat Desa'}
+                    ])">
+                        <i class="fas fa-info-circle text-2xl"></i>
+                    </button>
+                </div>
+                <div class="bg-gray-100 p-5 rounded-xl shadow-lg border border-gray-200 flex items-center card-hover-effect">
+                    <i class="fas fa-volleyball-ball text-4xl text-[#2874A6] mr-4"></i>
+                    <div class="flex-grow-0">
+                        <p class="text-gray-600">VOLLI</p>
+                        <p class="text-2xl font-bold text-[#2874A6]">1 BUAH</p>
+                    </div>
+                    <button class="ml-auto text-gray-500 hover:text-[#2874A6] transition-colors duration-200" onclick="openDetailModal('Lapangan Voli', '1 BUAH', [
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=Lapangan+Voli+Utama', name: 'Lapangan Voli Utama', address: 'Pusat Desa'}
+                    ])">
+                        <i class="fas fa-info-circle text-2xl"></i>
+                    </button>
+                </div>
+                <div class="bg-gray-100 p-5 rounded-xl shadow-lg border border-gray-200 flex items-center card-hover-effect">
+                    <i class="fas fa-basketball-ball text-4xl text-[#2874A6] mr-4"></i>
+                    <div class="flex-grow-0">
+                        <p class="text-gray-600">BASKET</p>
+                        <p class="text-2xl font-bold text-[#2874A6]">1 BUAH</p>
+                    </div>
+                    <button class="ml-auto text-gray-500 hover:text-[#2874A6] transition-colors duration-200" onclick="openDetailModal('Lapangan Basket', '1 BUAH', [
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=Lapangan+Basket+Desa', name: 'Lapangan Basket Desa', address: 'Pusat Desa'}
+                    ])">
+                        <i class="fas fa-info-circle text-2xl"></i>
+                    </button>
+                </div>
+                <div class="bg-gray-100 p-5 rounded-xl shadow-lg border border-gray-200 flex items-center card-hover-effect">
+                    <i class="fas fa-palette text-4xl text-[#2874A6] mr-4"></i>
+                    <div class="flex-grow-0">
+                        <p class="text-gray-600">KESENIAN / BUDAYA</p>
+                        <p class="text-2xl font-bold text-[#2874A6]">1 BUAH</p>
+                    </div>
+                    <button class="ml-auto text-gray-500 hover:text-[#2874A6] transition-colors duration-200" onclick="openDetailModal('Sarana Kesenian / Budaya', '1 BUAH', [
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=Panggung+Seni', name: 'Panggung Kesenian Desa', address: 'Balai Desa'}
+                    ])">
+                        <i class="fas fa-info-circle text-2xl"></i>
+                    </button>
+                </div>
+                <div class="bg-gray-100 p-5 rounded-xl shadow-lg border border-gray-200 flex items-center card-hover-effect">
+                    <i class="fas fa-faucet-drip text-4xl text-[#2874A6] mr-4"></i> <!-- Icon for Sumur Desa -->
+                    <div class="flex-grow-0">
+                        <p class="text-gray-600">SUMUR DESA</p>
+                        <p class="text-2xl font-bold text-[#2874A6]">2 BUAH</p>
+                    </div>
+                    <button class="ml-auto text-gray-500 hover:text-[#2874A6] transition-colors duration-200" onclick="openDetailModal('Sumur Desa', '2 BUAH', [
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=Sumur+Gali+Dusun+A', name: 'Sumur Dusun A', address: 'Dusun A'},
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=Sumur+Gali+Dusun+B', name: 'Sumur Dusun B', address: 'Dusun B'}
+                    ])">
+                        <i class="fas fa-info-circle text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <h2 class="text-2xl font-bold text-gray-800 mt-8 mb-4">Prasarana Transportasi</h2>
+            <div class="flexible-grid mb-8">
+                <div class="bg-gray-100 p-5 rounded-xl shadow-lg border border-gray-200 flex items-center card-hover-effect">
+                    <i class="fas fa-road text-4xl text-[#2874A6] mr-4"></i>
+                    <div class="flex-grow-0">
+                        <p class="text-gray-600">JALAN DESA (ASPAL / BETON)</p>
+                        <p class="text-2xl font-bold text-[#2874A6]">2 KM</p>
+                    </div>
+                    <button class="ml-auto text-gray-500 hover:text-[#2874A6] transition-colors duration-200" onclick="openDetailModal('Jalan Desa (Aspal / Beton)', '2 KM', [
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=Jalan+Aspal+Utama', name: 'Jalan Aspal Utama', address: 'Jl. Utama'},
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=Jalan+Beton+Lingkungan', name: 'Jalan Beton Lingkungan', address: 'Jl. Lingkungan'}
+                    ])">
+                        <i class="fas fa-info-circle text-2xl"></i>
+                    </button>
+                </div>
+                <div class="bg-gray-100 p-5 rounded-xl shadow-lg border border-gray-200 flex items-center card-hover-effect">
+                    <i class="fas fa-bridge text-4xl text-[#2874A6] mr-4"></i> <!-- Icon for Jembatan Besi -->
+                    <div class="flex-grow-0">
+                        <p class="text-gray-600">JEMBATAN BESI</p>
+                        <p class="text-2xl font-bold text-[#2874A6]">1 BUAH</p>
+                    </div>
+                    <button class="ml-auto text-gray-500 hover:text-[#2874A6] transition-colors duration-200" onclick="openDetailModal('Jembatan Besi', '1 BUAH', [
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=Jembatan+Besi+Sungai', name: 'Jembatan Sungai Besar', address: 'Sungai Besar'}
+                    ])">
+                        <i class="fas fa-info-circle text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <h2 class="text-2xl font-bold text-gray-800 mt-8 mb-4">Prasarana Air Bersih</h2>
+            <div class="flexible-grid mb-8">
+                <div class="bg-gray-100 p-5 rounded-xl shadow-lg border border-gray-200 flex items-center card-hover-effect">
+                    <i class="fas fa-water text-4xl text-[#2874A6] mr-4"></i>
+                    <div class="flex-grow-0">
+                        <p class="text-gray-600">PENGOLAHAN AIR BERSIH</p>
+                        <p class="text-2xl font-bold text-[#2874A6]">4 BUAH</p>
+                    </div>
+                    <button class="ml-auto text-gray-500 hover:text-[#2874A6] transition-colors duration-200" onclick="openDetailModal('Pengolahan Air Bersih', '4 BUAH', [
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=Pengolahan+Air+Dusun+A', name: 'Unit Pengolahan Air Dusun A', address: 'Dusun A'},
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=Pengolahan+Air+Dusun+B', name: 'Unit Pengolahan Air Dusun B', address: 'Dusun B'},
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=Pengolahan+Air+Dusun+C', name: 'Unit Pengolahan Air Dusun C', address: 'Dusun C'},
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=Pengolahan+Air+Dusun+D', name: 'Unit Pengolahan Air Dusun D', address: 'Dusun D'}
+                    ])">
+                        <i class="fas fa-info-circle text-2xl"></i>
+                    </button>
+                </div>
+                <div class="bg-gray-100 p-5 rounded-xl shadow-lg border border-gray-200 flex items-center card-hover-effect">
+                    <i class="fas fa-hand-holding-water text-4xl text-[#2874A6] mr-4"></i>
+                    <div class="flex-grow-0">
+                        <p class="text-gray-600">SUMUR GALI</p>
+                        <p class="text-2xl font-bold text-[#2874A6]">86 BUAH</p>
+                    </div>
+                    <button class="ml-auto text-gray-500 hover:text-[#2874A6] transition-colors duration-200" onclick="openDetailModal('Sumur Gali', '86 BUAH', [
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=Sumur+Gali+Utama+1', name: 'Sumur Gali Utama Lokasi 1', address: 'Berbagai Lokasi'},
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=Sumur+Gali+Utama+2', name: 'Sumur Gali Utama Lokasi 2', address: 'Berbagai Lokasi'}
+                    ])">
+                        <i class="fas fa-info-circle text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <h2 class="text-2xl font-bold text-gray-800 mt-8 mb-4">Prasarana Sanitasi dan Irigasi</h2>
+            <div class="flexible-grid mb-8">
+                <div class="bg-gray-100 p-5 rounded-xl shadow-lg border border-gray-200 flex items-center card-hover-effect">
+                    <i class="fas fa-toilet text-4xl text-[#2874A6] mr-4"></i>
+                    <div class="flex-grow-0">
+                        <p class="text-gray-600">MCK UMUM</p>
+                        <p class="text-2xl font-bold text-[#2874A6]">2 BUAH</p>
+                    </div>
+                    <button class="ml-auto text-gray-500 hover:text-[#2874A6] transition-colors duration-200" onclick="openDetailModal('MCK Umum', '2 BUAH', [
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=MCK+Umum+Dusun+A', name: 'MCK Umum Dusun A', address: 'Dusun A'},
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=MCK+Umum+Dusun+B', name: 'MCK Umum Dusun B', address: 'Dusun B'}
+                    ])">
+                        <i class="fas fa-info-circle text-2xl"></i>
+                    </button>
+                </div>
+                <div class="bg-gray-100 p-5 rounded-xl shadow-lg border border-gray-200 flex items-center card-hover-effect">
+                    <i class="fas fa-water-ladder text-4xl text-[#2874A6] mr-4"></i>
+                    <div class="flex-grow-0">
+                        <p class="text-gray-600">SALURAN DRAINASE</p>
+                        <p class="text-2xl font-bold text-[#2874A6]">4000 METER</p>
+                    </div>
+                    <button class="ml-auto text-gray-500 hover:text-[#2874A6] transition-colors duration-200" onclick="openDetailModal('Saluran Drainase', '4000 METER', [
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=Saluran+Drainase+Utama', name: 'Saluran Drainase Utama Desa', address: 'Jl. Raya'}
+                    ])">
+                        <i class="fas fa-info-circle text-2xl"></i>
+                    </button>
+                </div>
+                <div class="bg-gray-100 p-5 rounded-xl shadow-lg border border-gray-200 flex items-center card-hover-effect">
+                    <i class="fas fa-door-open text-4xl text-[#2874A6] mr-4"></i>
+                    <div class="flex-grow-0">
+                        <p class="text-gray-600">PINTU AIR</p>
+                        <p class="text-2xl font-bold text-[#2874A6]">5 BUAH</p>
+                    </div>
+                    <button class="ml-auto text-gray-500 hover:text-[#2874A6] transition-colors duration-200" onclick="openDetailModal('Pintu Air', '5 BUAH', [
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=Pintu+Air+Sawah+1', name: 'Pintu Air Sawah Utara 1', address: 'Sawah Utara'},
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=Pintu+Air+Sawah+2', name: 'Pintu Air Sawah Utara 2', address: 'Sawah Utara'}
+                    ])">
+                        <i class="fas fa-info-circle text-2xl"></i>
+                    </button>
+                </div>
+                <div class="bg-gray-100 p-5 rounded-xl shadow-lg border border-gray-200 flex items-center card-hover-effect">
+                    <i class="fas fa-water text-4xl text-[#2874A6] mr-4"></i>
+                    <div class="flex-grow-0">
+                        <p class="text-gray-600">SALURAN IRIGASI</p>
+                        <p class="text-2xl font-bold text-[#2874A6]">3500 METER</p>
+                    </div>
+                    <button class="ml-auto text-gray-500 hover:text-[#2874A6] transition-colors duration-200" onclick="openDetailModal('Saluran Irigasi', '3500 METER', [
+                        {url: 'https://placehold.co/600x400/2874A6/FFFFFF?text=Saluran+Irigasi+Utama', name: 'Saluran Irigasi Utama Desa', address: 'Sawah Selatan'}
+                    ])">
+                        <i class="fas fa-info-circle text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="container mx-auto px-4 py-8 md:px-8 md:py-12 bg-white rounded-lg shadow-xl my-8">
+            <div class="flex items-center mb-4">
+                <div class="w-1.5 bg-[#2874A6] h-14 mr-4 rounded-full"></div>
+                <div>
+                    <h1 class="text-4xl font-bold text-gray-800 section-title-underline">Infografis</h1>
+                    <h2 class="text-2xl text-gray-500 mt-2">APBDes Bangkalaloe</h2>
+                </div>
+            </div>
+
+            <div class="text-center bg-gray-100 p-6 rounded-lg shadow-md mb-8">
+                <h1 class="text-3xl font-bold text-gray-800">INFOGRAFIS</h1>
+                <h2 class="text-2xl font-bold text-[#1A5276]">ANGGARAN PENDAPATAN DAN BELANJA DESA (APBDes)</h2>
+                <h2 class="text-2xl font-bold text-[#1A5276]">DESA BANGKALALOE T.A. 2024</h2>
+                <h3 class="text-xl font-bold text-gray-700">KECAMATAN BONTORAMBA</h3>
+                <h3 class="text-xl font-bold text-gray-700">KABUPATEN JENEPONTO</h3>
+            </div>
+
+            <div class="mt-4">
+                <h4 class="text-lg font-bold text-gray-800 mb-2">DANA TRANSFER DESA TAHUN ANGGARAN 2024</h4>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-gray-100 p-4 rounded-lg shadow-md">
+                    <div class="text-center">
+                        <p class="text-green-600 font-bold text-xl">Rp821.676.000</p>
+                        <p class="text-gray-700">DANA DESA</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-yellow-600 font-bold text-xl">Rp851.994.958</p>
+                        <p class="text-gray-700">ALOKASI DANA DESA</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-red-600 font-bold text-xl">Rp31.226.741</p>
+                        <p class="text-gray-700">DANA BAGI HASIL PAJAK</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-[#2874A6] font-bold text-xl">Rp1.704.897.699</p>
+                        <p class="text-gray-700">TOTAL</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8">
+                <h4 class="text-lg font-bold text-gray-800 mb-2">BELANJA DESA</h4>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-gray-100 border border-gray-300 rounded-lg shadow-md">
+                        <thead>
+                            <tr class="bg-gray-200">
+                                <th class="py-3 px-4 border-b-2 border-gray-300 text-left text-gray-700">Bidang</th>
+                                <th class="py-3 px-4 border-b-2 border-gray-300 text-left text-gray-700">Kegiatan</th>
+                                <th class="py-3 px-4 border-b-2 border-gray-300 text-right text-gray-700">Anggaran (Rp)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="py-2 px-4 border-b border-gray-300 text-gray-800 font-medium" rowspan="3">BIDANG PENYELENGGARAAN PEMERINTAHAN DESA</td>
+                                <td class="py-2 px-4 border-b border-gray-300 text-gray-700">PENYELENGGARAAN BELANJA SILTAP, TUNJANGAN DAN OPERASIONAL PEMERINTAH DESA</td>
+                                <td class="py-2 px-4 border-b border-gray-300 text-right text-gray-800">662.517.600</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border-b border-gray-300 text-gray-700">PENYEDIAAN BELANJA PEMELIHARAAN SARANA/PRASARANA KANTOR DESA</td>
+                                <td class="py-2 px-4 border-b border-gray-300 text-right text-gray-800">159.695.700</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border-b border-gray-300 text-gray-700">PENYELENGGARAAN TATA PRAJA PEMERINTAHAN, PERENCANAAN, KEUANGAN DAN PELAPORAN</td>
+                                <td class="py-2 px-4 border-b border-gray-300 text-right text-gray-800">31.000.000</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border-b border-gray-300 text-gray-800 font-medium" rowspan="6">BIDANG PELAKSANAAN PEMBANGUNAN DESA</td>
+                                <td class="py-2 px-4 border-b border-gray-300 text-gray-700">PENYELENGGARAAN PAUD/TK/TPA</td>
+                                <td class="py-2 px-4 border-b border-gray-300 text-right text-gray-800">103.200.000</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border-b border-gray-300 text-gray-700">PENYELENGGARAAN POSYANDU</td>
+                                <td class="py-2 px-4 border-b border-gray-300 text-right text-gray-800">36.000.000</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border-b border-gray-300 text-gray-700">PENGADAAN & PEMELIHARAAN MOBIL DESA</td>
+                                <td class="py-2 px-4 border-b border-gray-300 text-right text-gray-800">10.000.000</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border-b border-gray-300 text-gray-700">PENYELENGGARAAN PEKERJAAN UMUM DAN PENATAAN RUANG</td>
+                                <td class="py-2 px-4 border-b border-gray-300 text-right text-gray-800">192.864.500</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border-b border-gray-300 text-gray-700">PENGADAAN INFORMASI PUBLIK & PEMELIHARAAN HUTAN DESA</td>
+                                <td class="py-2 px-4 border-b border-gray-300 text-right text-gray-800">6.000.000</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border-b border-gray-300 text-gray-700">PENGELOLAAN PASAR DESA</td>
+                                <td class="py-2 px-4 border-b border-gray-300 text-right text-gray-800">5.000.000</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border-b border-gray-300 text-gray-800 font-medium" rowspan="4">BIDANG PEMBINAAN KEMASYARAKATAN</td>
+                                <td class="py-2 px-4 border-b border-gray-300 text-gray-700">KOORD. PEMBINAAN KEAMANAN, KETERTIBAN & KETENTERAMAN MASYARAKAT</td>
+                                <td class="py-2 px-4 border-b border-gray-300 text-right text-gray-800">8.600.000</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border-b border-gray-300 text-gray-700">DUKUNGAN SUB BIDANG KEBUDAYAAN DAN KEAGAMAAN</td>
+                                <td class="py-2 px-4 border-b border-gray-300 text-right text-gray-800">43.100.000</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border-b border-gray-300 text-gray-700">DUKUNGAN KEGIATAN LEMBAGA KEPEMUDAAN</td>
+                                <td class="py-2 px-4 border-b border-gray-300 text-right text-gray-800">5.000.000</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border-b border-gray-300 text-gray-700">DUKUNGAN KEGIATAN LEMBAGA KELEMBAGAAN</td>
+                                <td class="py-2 px-4 border-b border-gray-300 text-right text-gray-800">10.000.000</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border-b border-gray-300 text-gray-800 font-medium" rowspan="4">BIDANG PEMBERDAYAAN MASYARAKAT</td>
+                                <td class="py-2 px-4 border-b border-gray-300 text-gray-700">PENGUATAN KETAHANAN PANGAN TINGKAT DESA</td>
+                                <td class="py-2 px-4 border-b border-gray-300 text-right text-gray-800">218.945.000</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border-b border-gray-300 text-gray-700">PENINGKATAN KAPASITAS APARATUR DESA</td>
+                                <td class="py-2 px-4 border-b border-gray-300 text-right text-gray-800">8.000.000</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border-b border-gray-300 text-gray-700">PENINGKATAN KAPASITAS KELOMPOK PEMERHATI DAN PERLINDUNGAN ANAK</td>
+                                <td class="py-2 px-4 border-b border-gray-300 text-right text-gray-800">35.600.000</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border-b border-gray-300 text-gray-700">PENINGKATAN PENGELOLAAN BADAN USAHA MILIK DESA</td>
+                                <td class="py-2 px-4 border-b border-gray-300 text-right text-gray-800">2.500.000</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border-b border-gray-300 text-gray-800 font-medium" rowspan="2">BIDANG PENANGGULANGAN BENCANA, DARURAT DAN MENDESAK</td>
+                                <td class="py-2 px-4 border-b border-gray-300 text-gray-700">PENANGANAN KEADAAN DARURAT (BIAYA TAK TERDUGA)</td>
+                                <td class="py-2 px-4 border-b border-gray-300 text-right text-gray-800">10.000.000</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border-b border-gray-300 text-gray-700">PENANGANAN KEADAAN MENDESAK (BANTUAN LANGSUNG TUNAI - DESA DARI DD)</td>
+                                <td class="py-2 px-4 border-b border-gray-300 text-right text-gray-800">144.000.000</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="mt-8">
+                <h4 class="text-lg font-bold text-gray-800 mb-2">RINCIAN KEUANGAN</h4>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-gray-100 border border-gray-300 rounded-lg shadow-md">
+                        <tbody>
+                            <tr>
+                                <td class="py-2 px-4 border-b border-gray-300 text-gray-700">JUMLAH BELANJA</td>
+                                <td class="py-2 px-4 border-b border-gray-300 text-right text-gray-800">Rp. 1.687.022.800</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border-b border-gray-300 text-gray-700">SURPLUS / DEFISIT</td>
+                                <td class="py-2 px-4 border-b border-gray-300 text-right text-gray-800">Rp. 44.548</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border-b border-gray-300 text-gray-700">PENERIMAAN PEMBIAYAAN</td>
+                                <td class="py-2 px-4 border-b border-gray-300 text-right text-gray-800">Rp. 7.169.649</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border-b border-gray-300 text-gray-700">PENGELUARAN PEMBIAYAAN</td>
+                                <td class="py-2 px-4 border-b border-gray-300 text-right text-gray-800">Rp. 25.000.000</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="bg-[#1F2937] text-white px-4 py-8 md:px-8 md:py-10 mt-12 shadow-inner">
+        <div class="container mx-auto">
+            <div class="flex flex-col items-center pb-6 border-b border-gray-700 mb-6">
+                <div class="text-center">
+                    <h1 class="text-xl md:text-2xl text-white font-bold">Desa Bangkalaloe</h1>
+                    <p class="text-sm text-gray-300 mt-1">Kec. Bontoramba, Kab. Jeneponto, Sulawesi Selatan</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8 text-justify">
+                <div class="space-y-3">
+                    <h2 class="text-lg text-white font-bold flex items-center"><i class="fas fa-globe mr-2 text-[#3498DB]"></i>Website Profil Desa</h2>
+                    <p class="text-sm text-gray-300 leading-relaxed">
+                        Website profil Desa merupakan situs web yang memuat informasi dasar mengenai desa, sejarah, visi dan misi desa, sampai dengan peta wilayah desa.
+                    </p>
+                </div>
+                <div class="space-y-3">
+                    <h2 class="text-lg text-white font-bold flex items-center"><i class="fas fa-code mr-2 text-[#3498DB]"></i>Developer</h2>
+                    <p class="text-sm text-gray-300 leading-relaxed">
+                        Website ini dibuat oleh Ammar Tyo Pasaribu, Mahasiswa KKN Universitas Hasanuddin Gelombang 113 Desa Bangkalaloe pada Januari 2025.
+                    </p>
+                </div>
+                <div class="space-y-3">
+                    <h2 class="text-lg text-white font-bold flex items-center"><i class="fas fa-bullseye mr-2 text-[#3498DB]"></i>Harapan &amp; Tujuan</h2>
+                    <p class="text-sm text-gray-300 leading-relaxed">
+                        Situs web profil ini dibuat untuk tujuan promosi dan publisitas Desa Bangkalaloe agar lebih dikenal oleh khalayak ramai baik di dalam maupun di luar Desa Bangkalaloe.
+                    </p>
+                </div>
+            </div>
+            <div class="text-center mt-10 border-t border-gray-700 pt-6">
+                <p class="text-xs text-gray-400">
+                    © 2025 Desa Bangkalaloe - All rights reserved
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Detail Modal Structure -->
+    <div id="detailModal" class="fixed inset-0 bg-black bg-opacity-60 z-[9999] hidden flex items-center justify-center p-4">
+        <div class="bg-white p-8 rounded-xl shadow-2xl max-w-2xl w-full relative my-8 max-h-[90vh] overflow-y-auto modal-content">
+            <button class="close-detail-modal absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-4xl font-light leading-none transition-colors duration-200">&times;</button>
+            <h2 id="detailModalTitle" class="text-2xl font-bold text-gray-800 mb-4 text-center"></h2>
+            <div id="carouselContainer" class="relative w-full mb-4 overflow-hidden rounded-lg shadow-md">
+                <!-- Images and navigation overlays will be dynamically loaded here -->
+            </div>
+            <div class="flex justify-center items-center mt-2">
+                <p id="imageCounter" class="text-gray-600 text-sm"></p>
+            </div>
+            <p id="detailImageName" class="text-center text-lg font-semibold text-gray-700 mt-2"></p>
+            <p id="detailModalValue" class="text-center text-xl font-semibold text-[#2874A6] mt-1"></p>
+            <p id="detailModalAddress" class="text-center text-sm text-gray-500 mt-2"></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Navbar Active Link Logic ---
+            const navLinks = document.querySelectorAll('.nav-link');
+            const currentPath = window.location.pathname.split('/').pop();
+
+            navLinks.forEach(link => {
+                // Set active class on page load
+                if (link.getAttribute('href') === currentPath || (currentPath === '' && link.getAttribute('href') === 'index.html')) {
+                    link.classList.add('active');
+                }
+
+                // Add click listener for active class
+                link.addEventListener('click', function() {
+                    navLinks.forEach(l => l.classList.remove('active')); // Remove active from all
+                    this.classList.add('active'); // Add active to clicked link
+                });
+            });
+
+            // --- Hamburger Menu Toggle ---
+            const hamburger = document.getElementById('hamburger');
+            const navMenu = document.getElementById('nav-menu');
+
+            hamburger.addEventListener('click', function() {
+                navMenu.classList.toggle('active');
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!hamburger.contains(event.target) && !navMenu.contains(event.target) && navMenu.classList.contains('active')) {
+                    navMenu.classList.remove('active');
+                }
+            });
+
+            // --- Header Scroll Effect ---
+            const mainHeader = document.getElementById('main-header');
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 80) { // Adjust scroll threshold as needed
+                    mainHeader.classList.add('header-scrolled');
+                } else {
+                    mainHeader.classList.remove('header-scrolled');
+                }
+            });
+
+            // Create a tooltip div that is hidden by default (Global Tooltip)
+            const tooltip = d3.select("body").append("div")
+                .attr("class", "tooltip")
+                .style("opacity", 0);
+
+            // --- D3.js Chart for Pekerjaan ---
+            function createPekerjaanChart() {
+                const data = [
+                    { label: "Petani", value: 1521 },
+                    { label: "PNS", value: 247 },
+                    { label: "Wiraswasta / Pedagang", value: 331 },
+                    { label: "Peternak", value: 211 },
+                    { label: "Pensiunan", value: 206 },
+                    { label: "Tidak Bekerja", value: 340 },
+                    { label: "Jasa", value: 37 },
+                    { label: "TNI / POLRI", value: 41 },
+                    { label: "Pekerja Seni", value: 5 }
+                ];
+
+                const total = data.reduce((sum, d) => sum + d.value, 0);
+
+                const container = d3.select("#pekerjaan-chart-container");
+                container.html(""); // Clear previous chart if any
+
+                const width = container.node().getBoundingClientRect().width;
+                const height = 400; // Fixed height for the chart
+                const radius = Math.min(width, height) / 2 - 40; // Adjusted radius
+
+                const svg = container.append("svg")
+                    .attr("width", width)
+                    .attr("height", height)
+                    .append("g")
+                    .attr("transform", `translate(${width / 2}, ${height / 2})`);
+
+                const color = d3.scaleOrdinal()
+                    .domain(data.map(d => d.label))
+                    .range(d3.schemeCategory10); // Using a built-in D3 color scheme for variety
+
+                const pie = d3.pie()
+                    .sort(null)
+                    .value(d => d.value);
+
+                const arc = d3.arc()
+                    .innerRadius(0)
+                    .outerRadius(radius);
+
+                const arcs = svg.selectAll(".arc")
+                    .data(pie(data))
+                    .enter()
+                    .append("g")
+                    .attr("class", "arc");
+
+                arcs.append("path")
+                    .attr("d", arc)
+                    .attr("fill", d => color(d.data.label))
+                    .attr("stroke", "white")
+                    .style("stroke-width", "2px")
+                    .style("opacity", 0.8)
+                    .on("mouseover", function(event, d) {
+                        d3.select(this).transition() // Add transition for scaling
+                            .duration(200)
+                            .attr("transform", `scale(1.05)`); // Scale up on hover
+                        tooltip.transition()
+                            .duration(200)
+                            .style("opacity", .9);
+                        tooltip.html(`<strong>${d.data.label}:</strong> ${d.data.value} (${((d.data.value / total) * 100).toFixed(1)}%)`)
+                            .style("left", (event.pageX + 10) + "px")
+                            .style("top", (event.pageY - 28) + "px");
+                    })
+                    .on("mouseout", function() {
+                        d3.select(this).transition() // Add transition for scaling back
+                            .duration(200)
+                            .attr("transform", "scale(1)"); // Scale back on mouse out
+                        tooltip.transition()
+                            .duration(500)
+                            .style("opacity", 0);
+                    });
+
+                // Add text labels
+                arcs.append("text")
+                    .attr("transform", d => `translate(${arc.centroid(d)})`)
+                    .attr("dy", "0.35em")
+                    .text(d => `${((d.data.value / total) * 100).toFixed(1)}%`)
+                    .style("font-size", "12px")
+                    .style("text-anchor", "middle")
+                    .style("fill", "white")
+                    .style("pointer-events", "none"); // Make text not interfere with mouse events
+
+                // Add legend (using custom legend-item classes)
+                const legendContainer = d3.select("#pekerjaan-chart-container").append("div")
+                    .attr("class", "absolute top-4 right-4 p-2 bg-white bg-opacity-90 rounded-lg shadow-sm");
+
+                const legend = legendContainer.selectAll(".legend-item")
+                    .data(data)
+                    .enter().append("div")
+                    .attr("class", "legend-item");
+
+                legend.append("div")
+                    .attr("class", "legend-color-box")
+                    .style("background-color", d => color(d.label));
+
+                legend.append("span")
+                    .attr("class", "legend-text")
+                    .text(d => d.label);
+            }
+
+            // --- D3.js Chart for Pendidikan ---
+            function createPendidikanChart() {
+                const data = [
+                    { label: "SD", value: 1100 },
+                    { label: "SMP", value: 700 },
+                    { label: "SMA", value: 500 },
+                    { label: "S1", value: 300 },
+                    { label: "S2", value: 50 },
+                    { label: "Tidak Sekolah", value: 1017 },
+                    { label: "Tidak Lulus", value: 9 }
+                ];
+
+                const total = data.reduce((sum, d) => sum + d.value, 0);
+
+                const container = d3.select("#pendidikan-chart-container");
+                container.html(""); // Clear previous chart if any
+
+                const width = container.node().getBoundingClientRect().width;
+                const height = 400; // Fixed height for the chart
+                const radius = Math.min(width, height) / 2 - 40; // Adjusted radius
+
+                const svg = container.append("svg")
+                    .attr("width", width)
+                    .attr("height", height)
+                    .append("g")
+                    .attr("transform", `translate(${width / 2}, ${height / 2})`);
+
+                const color = d3.scaleOrdinal()
+                    .domain(data.map(d => d.label))
+                    .range(d3.schemePaired); // Another built-in D3 color scheme
+
+                const pie = d3.pie()
+                    .sort(null)
+                    .value(d => d.value);
+
+                const arc = d3.arc()
+                    .innerRadius(0)
+                    .outerRadius(radius);
+
+                const arcs = svg.selectAll(".arc")
+                    .data(pie(data))
+                    .enter()
+                    .append("g")
+                    .attr("class", "arc");
+
+                arcs.append("path")
+                    .attr("d", arc)
+                    .attr("fill", d => color(d.data.label))
+                    .attr("stroke", "white")
+                    .style("stroke-width", "2px")
+                    .style("opacity", 0.8)
+                    .on("mouseover", function(event, d) {
+                        d3.select(this).transition() // Add transition for scaling
+                            .duration(200)
+                            .attr("transform", `scale(1.05)`); // Scale up on hover
+                        tooltip.transition()
+                            .duration(200)
+                            .style("opacity", .9);
+                        tooltip.html(`<strong>${d.data.label}:</strong> ${d.data.value} (${((d.data.value / total) * 100).toFixed(1)}%)`)
+                            .style("left", (event.pageX + 10) + "px")
+                            .style("top", (event.pageY - 28) + "px");
+                    })
+                    .on("mouseout", function() {
+                        d3.select(this).transition() // Add transition for scaling back
+                            .duration(200)
+                            .attr("transform", "scale(1)"); // Scale back on mouse out
+                        tooltip.transition()
+                            .duration(500)
+                            .style("opacity", 0);
+                    });
+
+                // Add text labels
+                arcs.append("text")
+                    .attr("transform", d => `translate(${arc.centroid(d)})`)
+                    .attr("dy", "0.35em")
+                    .text(d => `${((d.data.value / total) * 100).toFixed(1)}%`)
+                    .style("font-size", "12px")
+                    .style("text-anchor", "middle")
+                    .style("fill", "white")
+                    .style("pointer-events", "none");
+
+                // Add legend (using custom legend-item classes)
+                const legendContainer = d3.select("#pendidikan-chart-container").append("div")
+                    .attr("class", "absolute top-4 right-4 p-2 bg-white bg-opacity-90 rounded-lg shadow-sm");
+
+                const legend = legendContainer.selectAll(".legend-item")
+                    .data(data)
+                    .enter().append("div")
+                    .attr("class", "legend-item");
+
+                legend.append("div")
+                    .attr("class", "legend-color-box")
+                    .style("background-color", d => color(d.label));
+
+                legend.append("span")
+                    .attr("class", "legend-text")
+                    .text(d => d.label);
+            }
+
+            // Initial chart rendering
+            createPekerjaanChart();
+            createPendidikanChart();
+
+            // Re-render charts on window resize
+            window.addEventListener('resize', () => {
+                createPekerjaanChart();
+                createPendidikanChart();
+            });
+
+            // --- Generic Detail Modal Logic ---
+            const detailModal = document.getElementById('detailModal');
+            const detailModalTitle = document.getElementById('detailModalTitle');
+            const detailModalValue = document.getElementById('detailModalValue');
+            const detailImageName = document.getElementById('detailImageName'); // New element for image name
+            const detailModalAddress = document.getElementById('detailModalAddress');
+            const closeDetailModalBtn = detailModal.querySelector('.close-detail-modal');
+
+            let currentImageIndex = 0;
+            let modalImageData = []; // Changed to store objects with url, name, address
+
+            function showImage(index) {
+                const carouselContainer = document.getElementById('carouselContainer');
+                carouselContainer.innerHTML = ''; // Clear previous images and overlays
+
+                if (modalImageData.length === 0) {
+                    carouselContainer.innerHTML = '<p class="text-center text-gray-500 mt-8">Tidak ada gambar tersedia.</p>';
+                    document.getElementById('imageCounter').textContent = '';
+                    detailImageName.textContent = '';
+                    detailModalAddress.textContent = '';
+                    return;
+                }
+
+                const currentImage = modalImageData[index];
+
+                // Create image element
+                const img = document.createElement('img');
+                img.src = currentImage.url;
+                img.alt = currentImage.name || 'Detail Image ' + (index + 1);
+                img.classList.add('w-full', 'h-full', 'object-contain', 'rounded-lg');
+                // Add onerror to display placeholder if image fails to load
+                img.onerror = function() {
+                    this.onerror = null; // Prevent infinite loop if placeholder also fails
+                    this.src = `https://placehold.co/600x400/CCCCCC/000000?text=Gambar+Tidak+Tersedia`;
+                };
+                carouselContainer.appendChild(img);
+
+                // Update image name and address
+                detailImageName.textContent = currentImage.name || '';
+                detailModalAddress.textContent = currentImage.address ? `Alamat: ${currentImage.address}` : '';
+
+                // Add navigation overlays if more than one image
+                if (modalImageData.length > 1) {
+                    const overlayLeft = document.createElement('div');
+                    overlayLeft.classList.add('carousel-nav-overlay', 'left');
+                    overlayLeft.innerHTML = '&#9664;'; // Left arrow symbol
+                    overlayLeft.onclick = prevImage;
+                    carouselContainer.appendChild(overlayLeft);
+
+                    const overlayRight = document.createElement('div');
+                    overlayRight.classList.add('carousel-nav-overlay', 'right');
+                    overlayRight.innerHTML = '&#9654;'; // Right arrow symbol
+                    overlayRight.onclick = nextImage;
+                    carouselContainer.appendChild(overlayRight);
+                }
+
+                document.getElementById('imageCounter').textContent = `${index + 1} / ${modalImageData.length}`;
+            }
+
+            window.nextImage = function() {
+                currentImageIndex = (currentImageIndex + 1) % modalImageData.length;
+                showImage(currentImageIndex);
+            }
+
+            window.prevImage = function() {
+                currentImageIndex = (currentImageIndex - 1 + modalImageData.length) % modalImageData.length;
+                showImage(currentImageIndex);
+            }
+
+            window.openDetailModal = function(title, value, imageData) { // imageData is now an array of objects
+                detailModalTitle.textContent = title;
+                detailModalValue.textContent = value;
+                modalImageData = imageData;
+                currentImageIndex = 0; // Reset to first image
+                showImage(currentImageIndex);
+
+                detailModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            };
+
+            // Close functionality for detailModal
+            if (closeDetailModalBtn) {
+                closeDetailModalBtn.addEventListener('click', function() {
+                    detailModal.classList.add('hidden');
+                    document.body.style.overflow = '';
+                });
+            }
+            if (detailModal) {
+                detailModal.addEventListener('click', function(e) {
+                    // Only close if the click target is the modal background itself, not its children
+                    if (e.target === detailModal) {
+                        detailModal.classList.add('hidden');
+                        document.body.style.overflow = '';
+                    }
+                });
+            }
+
+            // --- Monography Modal Logic with Loading (kept for consistency) ---
+            const openMonographyModalBtn = document.getElementById('openMonographyModal');
+            const monographyModal = document.getElementById('monographyModal');
+            const loadingModal = document.getElementById('loadingModal');
+
+            if (monographyModal) {
+                if (openMonographyModalBtn) {
+                    openMonographyModalBtn.addEventListener('click', function(e) {
+                        e.preventDefault(); // Prevent default link behavior
+                        loadingModal.classList.remove('hidden'); // Show loading modal
+                        document.body.style.overflow = 'hidden'; // Prevent scrolling background
+
+                        setTimeout(() => {
+                            loadingModal.classList.add('hidden'); // Hide loading modal after 0.5 seconds
+                            monographyModal.classList.remove('hidden'); // Show monography modal
+                        }, 500);
+                    });
+                }
+
+                // Add close functionality for monographyModal
+                const closeMonographyModalBtn = monographyModal.querySelector('.close-monography-modal');
+                if (closeMonographyModalBtn) {
+                    closeMonographyModalBtn.addEventListener('click', function() {
+                        monographyModal.classList.add('hidden');
+                        document.body.style.overflow = '';
+                    });
+                }
+                monographyModal.addEventListener('click', function(e) {
+                    if (e.target === monographyModal) {
+                        monographyModal.classList.add('hidden');
+                        document.body.style.overflow = '';
+                    }
+                });
+            }
+
+            // --- QR Code Modals Logic (kept for consistency) ---
+            const qrCodeModal = document.getElementById('qrCodeModal');
+            const closeQrCodeModalBtn = document.getElementById('closeQrCodeModal');
+            const qrCodeWAModal = document.getElementById('closeQrCodeWAModal');
+            const closeQrCodeWAModalBtn = document.getElementById('closeQrCodeWAModal');
+
+            if (closeQrCodeModalBtn) {
+                closeQrCodeModalBtn.addEventListener('click', function() {
+                    qrCodeModal.classList.add('hidden');
+                    document.body.style.overflow = '';
+                });
+            }
+
+            if (qrCodeModal) {
+                qrCodeModal.addEventListener('click', function(e) {
+                    if (e.target === qrCodeModal) {
+                        qrCodeModal.classList.add('hidden');
+                        document.body.style.overflow = '';
+                    }
+                });
+            }
+
+            if (closeQrCodeWAModalBtn) {
+                closeQrCodeWAModalBtn.addEventListener('click', function() {
+                    qrCodeWAModal.classList.add('hidden');
+                    document.body.style.overflow = '';
+                });
+            }
+
+            if (qrCodeWAModal) {
+                qrCodeWAModal.addEventListener('click', function(e) {
+                    if (e.target === qrCodeWAModal) {
+                        qrCodeWAModal.classList.add('hidden');
+                        document.body.style.overflow = '';
+                    }
+                });
+            }
+
+            // --- Scroll Animation Logic (kept for consistency) ---
+            const scrollElements = document.querySelectorAll('.animate-on-scroll');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    } else {
+                        // Optional: Remove class when out of view to re-trigger on scroll back up
+                        // entry.target.classList.remove('is-visible');
+                    }
+                });
+            }, { threshold: 0.2 });
+
+            scrollElements.forEach(element => {
+                observer.observe(element);
+            });
+        });
+    </script>
+
+    <!-- Generic Loading Modal Structure (for monography or other future modals) -->
+    <div id="loadingModal" class="fixed inset-0 bg-black bg-opacity-60 z-[9999] hidden flex items-center justify-center">
+        <div class="bg-white p-8 rounded-xl shadow-2xl flex flex-col items-center justify-center w-48 h-48">
+            <div class="rotating-dots-group">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <p class="text-gray-600 mt-4 font-bold">Memuat data...</p>
+        </div>
+    </div>
+
+    <!-- Placeholder for Monography Modal -->
+    <div id="monographyModal" class="fixed inset-0 bg-black bg-opacity-60 z-[9999] hidden flex items-center justify-center p-4">
+        <div class="bg-gray-200 p-8 rounded-xl shadow-2xl max-w-3xl w-full relative my-8 max-h-[90vh] overflow-y-auto modal-content">
+            <button class="close-monography-modal absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-4xl font-light leading-none transition-colors duration-200">&times;</button>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Detail Monografi Desa</h2>
+            <p class="text-gray-700">Isi detail monografi akan dimuat di sini...</p>
+            <!-- Add more content as needed for the monography modal -->
+        </div>
+    </div>
+
+    <!-- Profile Modal (kept for consistency if needed by other pages, but not triggered on this page) -->
+    <div id="profileModal" class="fixed inset-0 bg-black bg-opacity-60 z-[9999] hidden flex items-center justify-center p-4">
+        <div class="bg-gray-200 p-8 rounded-xl shadow-2xl max-w-3xl w-full relative my-8 max-h-[90vh] overflow-y-auto modal-content">
+            <button id="closeModal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-4xl font-light leading-none transition-colors duration-200">&times;</button>
+            <div class="clear-both">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-3xl font-bold text-gray-800">Detail Aparatur Desa</h1>
+                </div>
+                <div class="space-y-6">
+                    <div class="flex justify-center mb-6">
+                        <img id="modalProfileImage" alt="Portrait" class="w-28 h-28 rounded-full border-4 border-[#2874A6] shadow-lg" src=""/>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex justify-between bg-gray-100 p-2 rounded-md">
+                            <span class="font-semibold text-gray-700">Nama:</span>
+                            <span id="modalNama" class="text-gray-800"></span>
+                        </div>
+                        <div class="flex justify-between bg-gray-100 p-2 rounded-md">
+                            <span class="font-semibold text-gray-700">Jenis Kelamin:</span>
+                            <span id="modalJenisKelamin" class="text-gray-800"></span>
+                        </div>
+                        <div class="flex justify-between bg-gray-100 p-2 rounded-md">
+                            <span class="font-semibold text-gray-700">Tempat Lahir:</span>
+                            <span id="modalTempatLahir" class="text-gray-800"></span>
+                        </div>
+                        <div class="flex justify-between bg-gray-100 p-2 rounded-md">
+                            <span class="font-semibold text-gray-700">Tanggal Lahir:</span>
+                            <span id="modalTanggalLahir" class="text-gray-800"></span>
+                        </div>
+                        <div class="flex justify-between bg-gray-100 p-2 rounded-md">
+                            <span class="font-semibold text-gray-700">Alamat:</span>
+                            <span id="modalAlamat" class="text-gray-800"></span>
+                        </div>
+                        <div class="flex justify-between bg-gray-100 p-2 rounded-md">
+                            <span class="font-semibold text-gray-700">Gol Darah:</span>
+                            <span id="modalGolDarah" class="text-gray-800"></span>
+                        </div>
+                        <div class="flex justify-between bg-gray-100 p-2 rounded-md">
+                            <span class="font-semibold text-gray-700">Agama:</span>
+                            <span id="modalAgama" class="text-gray-800"></span>
+                        </div>
+                        <div class="flex justify-between bg-gray-100 p-2 rounded-md">
+                            <span class="font-semibold text-gray-700">Pend Terakhir:</span>
+                            <span id="modalPendTerakhir" class="text-gray-800"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QR Code Modal -->
+    <div id="qrCodeModal" class="fixed inset-0 bg-black bg-opacity-60 z-[9999] hidden flex items-center justify-center p-4">
+        <div class="bg-white p-6 rounded-xl shadow-2xl max-w-sm w-full relative">
+            <button id="closeQrCodeModal" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-4xl font-light leading-none transition-colors duration-200">&times;</button>
+            <h2 class="text-xl font-bold text-gray-800 mb-4 text-center">Website QR Code</h2>
+            <img src="images/qrcode.jpg" alt="QR Code" class="w-full h-auto rounded-lg"/>
+        </div>
+    </div>
+
+    <!-- WhatsApp QR Code Modal -->
+    <div id="qrCodeWAModal" class="fixed inset-0 bg-black bg-opacity-60 z-[9999] hidden flex items-center justify-center p-4">
+        <div class="bg-white p-6 rounded-xl shadow-2xl max-w-sm w-full relative">
+            <button id="closeQrCodeWAModal" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-4xl font-light leading-none transition-colors duration-200">&times;</button>
+            <h2 class="text-xl font-bold text-gray-800 mb-4 text-center">WhatsApp QR Code</h2>
+            <img src="images/qrcodewa.jpg" alt="QR Code WhatsApp" class="w-full h-auto rounded-lg"/>
+        </div>
+    </div>
+</body>
+</html>
