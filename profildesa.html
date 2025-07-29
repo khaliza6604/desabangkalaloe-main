@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Desa Bangkalaloe</title>
+    <title>Desa Bontomarannu</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome for icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
@@ -135,13 +135,6 @@
             background: #555;
         }
 
-        /* Parallax background for Hero section (from Canvas - though not used on this page, keeping for consistency) */
-        .parallax-bg {
-            background-image: url('https://placehold.co/1920x1080/1A5276/FFFFFF?text=Hero+Background'); /* Set your image path here */
-            background-attachment: fixed; /* This is the key for parallax */
-            background-size: cover;
-            background-position: center;
-        }
         @media (max-width: 767px) {
             .parallax-bg {
                 background-attachment: scroll; /* Disable parallax on mobile for performance */
@@ -260,15 +253,15 @@
         <div class="container mx-auto flex items-center justify-between">
             <div class="flex items-center">
                 <img
-                    alt="Logo of Jeneponto"
-                    class="h-16 w-16 mr-4 rounded-full shadow-lg transform hover:rotate-6 transition-transform duration-300"
+                    alt="Logo of Bulukumba"
+                    class="h-16 w-16 mr-4 shadow-lg transform hover:rotate-6 transition-transform duration-300"
                     height="80"
-                    src="https://placehold.co/80x80/1A5276/FFFFFF?text=Logo"
+                    src="images/logobulkum.png"
                     width="80"
                 />
                 <div>
-                    <h1 class="text-white text-3xl font-extrabold tracking-wider">Desa Bangkalaloe</h1>
-                    <p class="text-white text-sm opacity-90">Kabupaten Jeneponto</p>
+                    <h1 class="text-white text-3xl font-extrabold tracking-wider">Desa Bontomarannu</h1>
+                    <p class="text-white text-sm opacity-90">Kabupaten Bulukumba</p>
                 </div>
             </div>
             <!-- Hamburger Icon for Mobile -->
@@ -284,7 +277,7 @@
                             group-hover:text-white transition-all duration-300"
                             href="index.html"
                         >
-                            Home
+                            Beranda
                         </a>
                     </li>
                     <li class="group relative">
@@ -307,11 +300,20 @@
                     </li>
                     <li class="group relative">
                         <a
-                            class="relative z-10 font-semibold nav-link px-4 py-2 rounded-lg
+                            class="relative z-10 font-semibold nav-link px-4 py-2 rounded-lg 
                             group-hover:text-white transition-all duration-300"
                             href="umkm.html"
                         >
                             UMKM
+                        </a>
+                    </li>
+                    <li class="group relative">
+                        <a
+                            class="relative z-10 font-semibold nav-link px-4 py-2 rounded-lg 
+                            group-hover:text-white transition-all duration-300"
+                            href="galeri.html"
+                        >
+                            Galeri
                         </a>
                     </li>
                     <li class="group relative">
@@ -335,34 +337,20 @@
             <div class="flex flex-col md:flex-row items-center md:items-center md:space-x-8">
                 <!-- Kepala Desa Section (Left Column) -->
                 <div id="kepalaDesaSection" class="relative flex-shrink-0 mb-8 md:mb-0 md:w-1/3 max-w-sm bg-white rounded-xl shadow-lg border border-gray-100 transform transition-transform duration-300 hover:scale-[1.02] hover:shadow-2xl">
-                    <!-- Loading Content -->
-                    <div id="kepalaDesaLoading" class="flex flex-col items-center justify-center w-full h-full p-6">
-                        <div class="rotating-dots-group">
-                            <div class="dot"></div>
-                            <div class="dot"></div>
-                            <div class="dot"></div>
-                            <div class="dot"></div>
-                            <div class="dot"></div>
-                            <div class="dot"></div>
-                            <div class="dot"></div>
-                            <div class="dot"></div>
-                        </div>
-                        <p class="text-gray-600 mt-4 font-bold">Memuat data...</p>
-                    </div>
-                    <!-- Kepala Desa Content (initially hidden, shown after initial load) -->
-                    <div id="kepalaDesaContent" class="hidden flex flex-col items-center text-center md:items-start md:text-left w-full p-6">
+                    <!-- Kepala Desa Content (always visible now) -->
+                    <div id="kepalaDesaContent" class="flex flex-col items-center text-center w-full p-6">
                         <div class="relative group mb-6">
-                            <img alt="Foto Kepala Desa" class="rounded-full border-4 border-[#2874A6] shadow-lg w-48 h-48 object-cover transition-transform duration-300 group-hover:scale-105" height="200" src="imagesstruktur/kepaladesa.jpg" width="200"/>
+                            <img alt="Foto Kepala Desa" class="rounded-full border-4 border-[#2874A6] shadow-lg w-48 h-48 object-cover transition-transform duration-300 group-hover:scale-105" height="200" src="images/andi_pahruddin.jpg" width="200"/>
                             <div class="absolute inset-0 rounded-full border-4 border-[#3498DB] opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse-slow"></div>
                         </div>
-                        <div class="flex items-center justify-center md:justify-start mb-2"> <!-- Icon and Nama -->
+                        <div class="flex flex-col items-center justify-center mb-2"> <!-- Icon and Nama -->
                             <i class="fas fa-user-tie text-4xl text-[#2874A6] mr-4"></i> <!-- New Icon for Kepala Desa -->
                             <h2 class="text-2xl font-bold text-gray-800 leading-tight">
-                                HJ. ST. SYAMSIAH SAAD, S.Pd.i
+                                ANDI PAHRUDDIN
                             </h2>
                         </div>
                         <p class="text-gray-500 text-lg mb-4">
-                            Kepala Desa Bangkalaloe
+                            Kepala Desa Bontomarannu
                         </p>
                         <!-- "Selengkapnya" button -->
                         <button id="openKepalaDesaModalBtn" class="inline-flex items-center bg-[#3498DB] text-white font-bold py-2 px-6 rounded-full shadow-md hover:bg-[#2880B9] transition-all duration-300 transform hover:scale-105 group text-base">
@@ -379,14 +367,12 @@
                     </h1>
                     <div class="mt-4 border-l-4 border-[#3498DB] pl-4 md:pl-6 mb-8">
                         <p class="text-3xl md:text-4xl font-bold text-gray-800 leading-snug flex items-center">
-                            <i class="fas fa-bullseye text-[#2874A6] mr-3 text-2xl"></i> TERWUJUDNYA
+                            <i class="text-[#2874A6] mr-3 text-2xl"></i> Terwujudnya Desa Bontomarannu yang aman sehat, cerdas, berdaya saing, berbudaya dan berakhlaq mulia
                         </p>
-                        <p class="text-2xl md:text-3xl font-extrabold text-[#1A5276] leading-snug mt-2 flex items-center">
-                            <i class="fas fa-star text-[#2874A6] mr-3 text-xl"></i> JULUBORITTA PLUS
-                        </p>
-                        <p class="text-gray-700 text-lg leading-relaxed mt-4">
-                            MA<span class="text-[#1A5276] font-bold">JU</span>, INK<span class="text-[#1A5276] font-bold">LU</span>SIF, <span class="text-[#1A5276] font-bold">B</span>ERSIH, IN<span class="text-[#1A5276] font-bold">O</span>VATIF, <span class="text-[#1A5276] font-bold">R</span>EL<span class="text-[#1A5276] font-bold">I</span>GIUS, DAN <span class="text-[#1A5276] font-bold">T</span>ERTA<span class="text-[#1A5276] font-bold">TA</span> sesuai prinsip <span class="text-[#1A5276] font-bold">P</span>EMBANGUNAN BERKE<span class="text-[#1A5276] font-bold">L</span>ANJUTAN MELAL<span class="text-[#1A5276] font-bold">U</span>I <span class="text-[#1A5276] font-bold">S</span>DGS DESA
-                        </p>
+                        <button id="openVisiModalBtn" class="inline-flex items-center bg-[#3498DB] text-white font-bold py-2 px-6 rounded-full shadow-md hover:bg-[#2880B9] transition-all duration-300 transform hover:scale-105 group text-base mt-4">
+                            Selengkapnya
+                            <i class="fas fa-book-open ml-2 group-hover:rotate-6 transition-transform duration-200"></i>
+                        </button>
                     </div>
 
                     <h1 class="text-3xl md:text-4xl font-extrabold text-[#2874A6] mb-6 mt-10 flex items-center">
@@ -394,64 +380,67 @@
                     </h1>
                     <div class="mt-4 border-l-4 border-[#3498DB] pl-4 md:pl-6">
                         <p class="text-gray-700 text-lg mb-2 leading-relaxed flex items-center">
-                            <i class="fas fa-brain text-[#2874A6] mr-3 text-xl"></i> 1. MEMBANGUN MENTAL, FISIK DAN SPRITUAL DESA DAN MASYARAKAT
+                            <i class="fas fa-shield-alt text-[#2874A6] mr-3 text-xl"></i> 1. Mewujudkan keamanan dan ketertiban di lingkungan Desa Bontomarannu
                         </p>
                         <p class="text-gray-700 text-lg mb-2 leading-relaxed flex items-center">
-                            <i class="fas fa-handshake text-[#2874A6] mr-3 text-xl"></i> 2. MENINGKATKAN TATA KELOLA PENYELENGGARAAN PEMERINTAHAN DESA YANG BAIK DAN BERSIH
+                            <i class="fas fa-heartbeat text-[#2874A6] mr-3 text-xl"></i> 2. Meningkatkan kesehatan masyarakat
                         </p>
                         <p class="text-gray-700 text-lg mb-2 leading-relaxed flex items-center">
-                            <i class="fas fa-hospital text-[#2874A6] mr-3 text-xl"></i> 3. MENINGKATKAN AKSES DAN KUALITAS PELAYANAN DASAR SECARA INKLUSIF
+                            <i class="fas fa-hands-helping text-[#2874A6] mr-3 text-xl"></i> 3. Mewujudkan dan meningkatkan serta meneruskan tata kelola pemerintahan desa yang baik.
                         </p>
                         <p class="text-gray-700 text-lg mb-2 leading-relaxed flex items-center">
-                            <i class="fas fa-chart-line text-[#2874A6] mr-3 text-xl"></i> 4. MENINGKATKAN PEREKONOMIAN DESA BERBASIS POTENSI LOKAL DAN INOVASI
+                            <i class="fas fa-handshake text-[#2874A6] mr-3 text-xl"></i> 4. Meningkatkan pelayanan yang maksimal kepada masyarakat desa dan daya saing desa.
                         </p>
                         <p class="text-gray-700 text-lg mb-2 leading-relaxed flex items-center">
-                            <i class="fas fa-building text-[#2874A6] mr-3 text-xl"></i> 5. MENINGKATKAN DAN PEMERATAAN PEMBANGUNAN INFRASTRUKTUR PEDESAAN
+                            <i class="fas fa-chart-line text-[#2874A6] mr-3 text-xl"></i> 5. Meningkatkan kesejahteraan masyarakat desa.
                         </p>
                         <p class="text-gray-700 text-lg mb-2 leading-relaxed flex items-center">
-                            <i class="fas fa-network-wired text-[#2874A6] mr-3 text-xl"></i> 6. MENINGKATKAN KEMITRAAN DAN PERLUASAN JEJARING DALAM PERCEPATAN PEMBANGUNAN DESA
+                            <i class="fas fa-building text-[#2874A6] mr-3 text-xl"></i> 6. Meningkatkan infrastruktur
                         </p>
                         <p class="text-gray-700 text-lg mb-2 leading-relaxed flex items-center">
-                            <i class="fas fa-users text-[#2874A6] mr-3 text-xl"></i> 7. MENINGKATKAN PEMBINAAN KEMASYARAKATAN DAN PEMBERDAYAAN MASYARAKAT DESA
+                            <i class="fas fa-users text-[#2874A6] mr-3 text-xl"></i> 7. Meningkatkan kehidupan yang harmonis, toleran, saling menghormati dalam kehidupan berbudaya dan beragama di Desa Bontomarannu.
+                        </p>
+                        <p class="text-gray-700 text-lg mb-2 leading-relaxed flex items-center">
+                            <i class="fas fa-balance-scale text-[#2874A6] mr-3 text-xl"></i> 8. Mengedepankan kejujuran, keadilan, transparansi dalam kehidupan sehari-hari baik dalam pemerintahan maupun dengan masyarakat desa.
                         </p>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </div> 
 
-    <div class="container mx-auto px-4 py-8 md:px-8 md:py-12 bg-white rounded-lg shadow-xl my-8 section-block animate-on-scroll">
-        <div class="md:w-full">
-            <div class="flex items-center mb-8">
-                <div class="w-2 bg-[#2874A6] h-16 mr-5 rounded-full"></div>
-                <div>
-                    <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 leading-tight">BAGAN DESA</h1>
-                    <h2 class="text-2xl md:text-3xl text-gray-600 font-semibold">
-                        Struktur Organisasi Desa Bangkalaloe
-                    </h2>
+        <div class="container mx-auto px-4 py-8 md:px-8 md:py-12 bg-white rounded-lg shadow-xl my-8 section-block animate-on-scroll">
+            <div class="md:w-full">
+                <div class="flex items-center mb-8">
+                    <div class="w-2 bg-[#2874A6] h-16 mr-5 rounded-full"></div>
+                    <div>
+                        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 leading-tight">BAGAN DESA</h1>
+                        <h2 class="text-2xl md:text-3xl text-gray-600 font-semibold">
+                            Struktur Organisasi Desa Bontomarannu
+                        </h2>
+                    </div>
                 </div>
-            </div>
 
-            <div class="bg-gray-50 shadow-md rounded-lg overflow-hidden mt-4 p-6 border border-gray-100">
-                <div class="bg-gray-100 p-4 rounded-lg mb-6">
-                    <h3 class="text-center text-gray-800 font-bold text-xl md:text-2xl mb-1">
-                        STRUKTUR ORGANISASI DAN TATA KERJA
-                    </h3>
-                    <h3 class="text-center text-gray-800 font-bold text-xl md:text-2xl mb-1">
-                        PEMERINTAHAN DESA BANGKALALOE
-                    </h3>
-                    <h3 class="text-center text-gray-800 font-bold text-xl md:text-2xl">
-                        KECAMATAN BANGKALALOE KABUPATEN JENEPONTO
-                    </h3>
-                </div>
-                <div class="flex justify-center items-center p-2">
-                    <img
-                        alt="Struktur Organisasi Pemerintahan Desa Bangkalaloe"
-                        class="w-full h-auto object-contain max-w-full rounded-lg shadow-lg border border-gray-200 transition-transform duration-300 hover:scale-[1.01]"
-                        height="400"
-                        src="imagesstruktur/strukturaparatdesabangkalaloelago.drawio.png"
-                        width="1200"
-                    />
+                <div class="bg-gray-50 shadow-md rounded-lg overflow-hidden mt-4 p-6 border border-gray-100">
+                    <div class="bg-gray-100 p-4 rounded-lg mb-6">
+                        <h3 class="text-center text-gray-800 font-bold text-xl md:text-2xl mb-1">
+                            STRUKTUR ORGANISASI DAN TATA KERJA
+                        </h3>
+                        <h3 class="text-center text-gray-800 font-bold text-xl md:text-2xl mb-1">
+                            PEMERINTAHAN DESA Bontomarannu,
+                        </h3>
+                        <h3 class="text-center text-gray-800 font-bold text-xl md:text-2xl">
+                            KECAMATAN Bontomarannu, KABUPATEN BONTOTIRO
+                        </h3>
+                    </div>
+                    <div class="flex justify-center items-center p-2">
+                        <img
+                            alt="Struktur Organisasi Pemerintahan Desa Bontomarannu"
+                            class="w-full h-auto object-contain max-w-full rounded-lg shadow-lg border border-gray-200 transition-transform duration-300 hover:scale-[1.01]"
+                            height="400"
+                            src="images/struktur_desa.png"
+                            width="1200"
+                        />
+                    </div>
                 </div>
             </div>
         </div>
@@ -462,8 +451,8 @@
         <div class="container mx-auto">
             <div class="flex flex-col items-center pb-6 border-b border-gray-700 mb-6">
                 <div class="text-center">
-                    <h1 class="text-xl md:text-2xl text-white font-bold">Desa Bangkalaloe</h1>
-                    <p class="text-sm text-gray-300 mt-1">Kec. Bontoramba, Kab. Jeneponto, Sulawesi Selatan</p>
+                    <h1 class="text-xl md:text-2xl text-white font-bold">Desa Bontomarannu</h1>
+                    <p class="text-sm text-gray-300 mt-1">Kec. Bontotiro, Kab. Bulukumba, Sulawesi Selatan</p>
                 </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8 text-justify">
@@ -476,29 +465,30 @@
                 <div class="space-y-3">
                     <h2 class="text-lg text-white font-bold flex items-center"><i class="fas fa-code mr-2 text-[#3498DB]"></i>Developer</h2>
                     <p class="text-sm text-gray-300 leading-relaxed">
-                        Website ini dibuat oleh Ammar Tyo Pasaribu, Mahasiswa KKN Universitas Hasanuddin Gelombang 113 Desa Bangkalaloe pada Januari 2025.
+                        Website ini dibuat oleh Khalizatul Jannah, Mahasiswa KKN Universitas Hasanuddin Gelombang 114 Desa Bontomarannu pada Juli-Agustus 2025.
                     </p>
                 </div>
                 <div class="space-y-3">
                     <h2 class="text-lg text-white font-bold flex items-center"><i class="fas fa-bullseye mr-2 text-[#3498DB]"></i>Harapan &amp; Tujuan</h2>
                     <p class="text-sm text-gray-300 leading-relaxed">
-                        Situs web profil ini dibuat untuk tujuan promosi dan publisitas Desa Bangkalaloe agar lebih dikenal oleh khalayak ramai baik di dalam maupun di luar Desa Bangkalaloe.
+                        Situs web profil ini dibuat untuk tujuan promosi dan publisitas Desa Bontomarannu agar lebih dikenal oleh khalayak ramai baik di dalam maupun di luar Desa Bontomarannu.
                     </p>
                 </div>
             </div>
             <div class="text-center mt-10 border-t border-gray-700 pt-6">
                 <p class="text-xs text-gray-400">
-                    © 2025 Desa Bangkalaloe - All rights reserved
+                    © 2025 Desa Bontomarannu - All rights reserved
                 </p>
             </div>
         </div>
     </footer>
 
     <!-- Modals -->
+    <!-- Modal for Kepala Desa Profile -->
     <div id="profileModal" class="fixed inset-0 bg-black bg-opacity-60 z-[9999] hidden flex items-center justify-center p-4">
         <div id="modalCard" class="bg-gray-200 p-8 rounded-xl shadow-2xl max-w-3xl w-full relative my-8 max-h-[90vh] overflow-y-auto modal-content">
             <!-- Loading Content -->
-            <div id="modalLoading" class="flex flex-col items-center justify-center w-full h-full">
+            <div id="modalLoading" class="flex flex-col items-center justify-center w-full h-full hidden">
                 <div class="rotating-dots-group">
                     <div class="dot"></div>
                     <div class="dot"></div>
@@ -512,14 +502,14 @@
                 <p class="text-gray-600 mt-4 font-bold">Memuat data...</p>
             </div>
             <!-- Modal Content (initially hidden) -->
-            <div id="modalContent" class="hidden clear-both">
+            <div id="modalContent" class="clear-both">
                 <button id="closeModal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-4xl font-light leading-none transition-colors duration-200">&times;</button>
                 <div class="flex justify-between items-center mb-6">
                     <h1 class="text-3xl font-bold text-gray-800">Detail Aparatur Desa</h1>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="flex justify-center mb-6 md:col-span-2">
-                        <img id="modalProfileImage" alt="Portrait" class="w-28 h-28 rounded-full border-4 border-[#2874A6] shadow-lg" src=""/>
+                        <img id="modalProfileImage" alt="Portrait" class="w-28 h-28 rounded-full border-4 border-[#2874A6] shadow-lg object-cover" src=""/>
                     </div>
                     <div class="bg-gray-100 p-3 rounded-md flex items-center space-x-3">
                         <i class="fas fa-user text-[#2874A6]"></i>
@@ -566,21 +556,39 @@
         </div>
     </div>
 
-    <!-- QR Code Modal (removed from footer, but kept here if needed elsewhere) -->
-    <div id="qrCodeModal" class="fixed inset-0 bg-black bg-opacity-60 z-[9999] hidden flex items-center justify-center p-4">
-        <div class="bg-white p-6 rounded-xl shadow-2xl max-w-sm w-full relative">
-            <button id="closeQrCodeModal" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-4xl font-light leading-none transition-colors duration-200">&times;</button>
-            <h2 class="text-xl font-bold text-gray-800 mb-4 text-center">Website QR Code</h2>
-            <img src="images/qrcode.jpg" alt="QR Code" class="w-full h-auto rounded-lg"/>
-        </div>
-    </div>
-
-    <!-- QR Code WhatsApp Modal (removed from footer, but kept here if needed elsewhere) -->
-    <div id="qrCodeWAModal" class="fixed inset-0 bg-black bg-opacity-60 z-[9999] hidden flex items-center justify-center p-4">
-        <div class="bg-white p-6 rounded-xl shadow-2xl max-w-sm w-full relative">
-            <button id="closeQrCodeWAModal" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-4xl font-light leading-none transition-colors duration-200">&times;</button>
-            <h2 class="text-xl font-bold text-gray-800 mb-4 text-center">WhatsApp QR Code</h2>
-            <img src="images/qrcodewa.jpg" alt="QR Code WhatsApp" class="w-full h-auto rounded-lg"/>
+    <!-- New Modal for Visi Details -->
+    <div id="visiDetailModal" class="fixed inset-0 bg-black bg-opacity-60 z-[9999] hidden flex items-center justify-center p-4">
+        <div id="visiModalCard" class="bg-gray-200 p-8 rounded-xl shadow-2xl max-w-3xl w-full relative my-8 max-h-[90vh] overflow-y-auto modal-content">
+            <!-- Loading Content for Visi Modal -->
+            <div id="visiModalLoading" class="flex flex-col items-center justify-center w-full h-full hidden">
+                <div class="rotating-dots-group">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+                <p class="text-gray-600 mt-4 font-bold">Memuat detail visi...</p>
+            </div>
+            <!-- Visi Modal Content (initially hidden) -->
+            <div id="visiModalContent" class="clear-both">
+                <button id="closeVisiModal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-4xl font-light leading-none transition-colors duration-200">&times;</button>
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-3xl font-bold text-gray-800">Detail Visi Desa Bontomarannu</h1>
+                </div>
+                <div class="space-y-4 text-gray-700 text-lg">
+                    <p>Visi tersebut memiliki 5 (lima) landasan dan pokok pikiran yang dapat diuraikan sebagai berikut:</p>
+                    <p><strong class="text-[#2874A6]">a. Aman</strong> yaitu Suatu Target dan Usaha yang akan di lakukan dalam menwujudkan Desa Dalam Menjalankan Masyarakat Bisa bekerja Pemerintahan Agar</p>
+                    <p><strong class="text-[#2874A6]">b. Sehat</strong>, merupakan sebuah harapan dan cita-cita masyarakat Bonto Marannu dalam setiap Menjalankan Aktivitas kegiatannya sehingga Generasi kita ini tumbuh Sehat</p>
+                    <p><strong class="text-[#2874A6]">c. Cerdas</strong>, sebuah harapan untuk menyatukan visi dari segenap komponen masyarakat, tidak membeda-bedakan unsur wilayah dan individu dalam pelaksanaan pembangunan.serta Mewujudkan cita cita Bangsa</p>
+                    <p><strong class="text-[#2874A6]">d. Berdaya Saing</strong>, yaitu merupakan cita-cita dan perwujudan masyarakat Desa Bontomarannu yang terbebas dari ketergantungan dan ketertinggalan terutama dalam pemenuhan kebutuhan hidupnya baik primer maupun sekunder.</p>
+                    <p><strong class="text-[#2874A6]">e. Berbudaya</strong>, merupakan penanaman nilai dan norma yang tumbuh dan berkembang dalam masyarakat sebagai potensi lokal yang menjunjung tinggi harkat dan martabat masyarakat Desa Bontomarannu.</p>
+                    <p><strong class="text-[#2874A6]">f. Berahlaq</strong>, Mulia yaitu merupakan cita-cita dan perwujudan masyarakat Desa Bontomarannu yang bermartabat dan berkepribdian sesuai nilai-nilai Agama.</p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -636,34 +644,21 @@
 
             // Get a reference to the modal's inner card element
             const modalCard = document.getElementById('modalCard');
-            let originalModalCardClasses = ''; // To store original classes
+            let originalModalCardClasses = '';
 
             const profileData = [
                 {
-                    nama: 'HJ. ST. SYAMSIAH SAAD, S.Pd.i',
+                    nama: 'ANDI PAHRUDDIN',
                     jabatan: 'KEPALA DESA',
-                    image: 'imagesstruktur/kepaladesa.jpg',
-                    jenisKelamin: 'Perempuan',
-                    tempatLahir: 'Pokobulo',
-                    tanggalLahir: '06 August 1953',
-                    alamat: 'Pokobulo',
-                    golDarah: '-',
-                    agama: 'Islam',
-                    pendTerakhir: 'Strata 1'
-                },
-                {
-                    nama: 'UMARYADI RASYID, S.T.',
-                    jabatan: 'SEKRETARIS DESA',
-                    image: 'https://placehold.co/200x200/1A5276/FFFFFF?text=Sekretaris+Desa', // Placeholder image
+                    image: 'images/andi_pahruddin.jpg',
                     jenisKelamin: 'Laki-laki',
-                    tempatLahir: 'Jeneponto',
-                    tanggalLahir: '01 January 1980',
-                    alamat: 'Desa Bangkalaloe',
+                    tempatLahir: 'Tulekko',
+                    tanggalLahir: '26 Juni 1968',
+                    alamat: 'Dusun Tulekko, Desa Bontomarannu',
                     golDarah: 'A',
                     agama: 'Islam',
-                    pendTerakhir: 'Strata 1'
+                    pendTerakhir: 'SMA' // Added a placeholder for pendidikan terakhir
                 },
-                // Add more profile data as needed
             ];
 
             function fillProfileModal(profileInfo) {
@@ -685,11 +680,12 @@
                     profileModal.classList.remove('hidden'); // Show modal container
                     document.body.style.overflow = 'hidden'; // Prevent scrolling background
 
-                    originalModalCardClasses = modalCard.className; // Store original classes before modification
+                    // Store original classes before modification
+                    originalModalCardClasses = modalCard.className;
 
-                    // Apply loading styles to modal card
-                    modalCard.classList.add('flex', 'items-center', 'justify-center', 'w-48', 'h-48', 'max-w-none', 'p-0'); // Fixed size for loading
-                    modalCard.classList.remove('max-w-3xl', 'w-full', 'p-8', 'my-8', 'max-h-[90vh]', 'overflow-y-auto'); // Remove original sizing/padding
+                    // Apply loading styles to modal card: make it square and center content
+                    modalCard.classList.add('flex', 'items-center', 'justify-center', 'w-48', 'h-48', 'max-w-none', 'p-0');
+                    modalCard.classList.remove('max-w-3xl', 'w-full', 'p-8', 'my-8', 'max-h-[90vh]', 'overflow-y-auto');
 
                     modalLoading.classList.remove('hidden'); // Show modal loading dots
                     modalContent.classList.add('hidden'); // Hide modal content
@@ -715,7 +711,57 @@
                 }
             });
 
+            // --- Visi Detail Modal Logic ---
+            const visiDetailModal = document.getElementById('visiDetailModal');
+            const openVisiModalBtn = document.getElementById('openVisiModalBtn');
+            const closeVisiModalBtn = document.getElementById('closeVisiModal');
+            const visiModalLoading = document.getElementById('visiModalLoading');
+            const visiModalContent = document.getElementById('visiModalContent');
+            const visiModalCard = document.getElementById('visiModalCard');
+            let originalVisiModalCardClasses = '';
+
+            if (openVisiModalBtn) {
+                openVisiModalBtn.addEventListener('click', function() {
+                    visiDetailModal.classList.remove('hidden'); // Show visi modal container
+                    document.body.style.overflow = 'hidden'; // Prevent scrolling background
+
+                    // Store original classes before modification
+                    originalVisiModalCardClasses = visiModalCard.className;
+
+                    // Apply loading styles to visi modal card
+                    visiModalCard.classList.add('flex', 'items-center', 'justify-center', 'w-48', 'h-48', 'max-w-none', 'p-0');
+                    visiModalCard.classList.remove('max-w-3xl', 'w-full', 'p-8', 'my-8', 'max-h-[90vh]', 'overflow-y-auto');
+
+                    visiModalLoading.classList.remove('hidden'); // Show visi modal loading dots
+                    visiModalContent.classList.add('hidden'); // Hide visi modal content
+
+                    setTimeout(() => {
+                        visiModalLoading.classList.add('hidden'); // Hide visi modal loading dots
+                        visiModalContent.classList.remove('hidden'); // Show visi modal content
+                        visiModalCard.className = originalVisiModalCardClasses; // Restore original classes
+                    }, 1000); // 1 second delay for modal content to appear
+                });
+            }
+
+            if (closeVisiModalBtn) {
+                closeVisiModalBtn.addEventListener('click', function() {
+                    visiDetailModal.classList.add('hidden');
+                    document.body.style.overflow = '';
+                });
+            }
+
+            if (visiDetailModal) {
+                visiDetailModal.addEventListener('click', function(e) {
+                    if (e.target === visiDetailModal) {
+                        visiDetailModal.classList.add('hidden');
+                        document.body.style.overflow = '';
+                    }
+                });
+            }
+
             // --- QR Code Modals Logic (kept as they were in the provided code snippet) ---
+            // These elements are not in the provided HTML, so these listeners won't fire.
+            // Keeping them for completeness if they exist elsewhere in your project.
             const openQrCodeModalBtn = document.getElementById('openQrCodeModalBtn');
             const qrCodeModal = document.getElementById('qrCodeModal');
             const closeQrCodeModalBtn = document.getElementById('closeQrCodeModal');
@@ -787,27 +833,6 @@
             scrollElements.forEach(element => {
                 observer.observe(element);
             });
-
-            // --- Simulate Loading for Kepala Desa Section on initial page load ---
-            const kepalaDesaSection = document.getElementById('kepalaDesaSection');
-            const kepalaDesaLoading = document.getElementById('kepalaDesaLoading');
-            const kepalaDesaContent = document.getElementById('kepalaDesaContent');
-
-            let originalKepalaDesaClasses = kepalaDesaSection.className; // Store original classes
-
-            // Apply loading styles to the card
-            kepalaDesaSection.classList.add('flex', 'items-center', 'justify-center', 'w-48', 'h-48'); // Make it square and center content
-            kepalaDesaSection.classList.remove('p-6', 'md:items-start', 'md:text-left'); // Remove original padding and alignment
-
-            kepalaDesaLoading.classList.remove('hidden');
-            kepalaDesaContent.classList.add('hidden');
-
-            setTimeout(() => {
-                // Restore original classes and show content
-                kepalaDesaSection.className = originalKepalaDesaClasses; // Restore all original classes
-                kepalaDesaLoading.classList.add('hidden');
-                kepalaDesaContent.classList.remove('hidden');
-            }, 1000); // 1 second delay for initial section load
         });
     </script>
 </body>
